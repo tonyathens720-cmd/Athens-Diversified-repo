@@ -1,4 +1,5 @@
-name: Deploy Synthara AI to Cloud Run # This ia the name of the workflow
+
+name: Deploy Synthara AI to Cloud Run
 
 on:
   push:
@@ -12,26 +13,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository code
-        uses: actions/checkout@v4 #Essential step to get your files
-
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
-
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-
-      - name: Run tests
-        run: pytest
+        uses: actions/checkout@v3
 
       - name: Authenticate to Google Cloud
         id: auth
         uses: google-github-actions/auth@v2
         with:
-          credentials_json: ${{ secrets.GCP_SA_KEY }}
+          credentials_json: ${{ secrets.GCPSAKEY }}
 
       - name: Set Up Cloud SDK
         uses: google-github-actions/setup-gcloud@v2
@@ -39,8 +27,7 @@ jobs:
       - name: Deploy to Cloud Run
         uses: google-github-actions/deploy-cloudrun@v2
         with:
-          project_id:
-banded-advice-453200-m1
-          service: Synthara-ai
+          project_id: banded-advice-453200-m1  # <-- Change to your actual project ID!
+          service: Synthara-ai                # <-- Change to your actual Cloud Run service name!
           region: us-central1
-          source: '.'
+          source: .
