@@ -85,10 +85,31 @@ jobs:
         python-version: '3.10'   # adjust Python version as needed
 
     - name: Install dependencies
-      run: |
+      run:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
     - name: Run tests
       run: |
         pytest     # change to `python myscript.py` or another command as needed
+
+    - name : 'Aunthenticate to Google Cloud'
+              id: auth
+            uses: 'google-github-actions/auth@v2'
+            with:
+              # This line uses the secret you created in GitHub Settings!
+              credentials_json: $ 
+               {{ secrets GCP_SA_KEY }}
+
+     - name : 'Set Up Cloud SDK'
+       uses : 'google-github- action/setup-gcloud@V2'
+       with :
+
+     -name :  'Deploy to Cloud Run'
+       uses:  'google-github-actions/deploy-cloudrun@V2
+
+          # PROJECT ID CONFIRMED!
+            project_id banded-advice-453200-m1
+      service: Synthara-ai
+      source: '.'
+      region: us-central1
