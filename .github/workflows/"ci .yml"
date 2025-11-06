@@ -1,4 +1,4 @@
-name: Deploy Synthara AI to Cloud Run
+name: Deploy Synthara AI to Cloud Run # This ia the name of the workflow
 
 on:
   push:
@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4 #Essential step to get your files
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -39,7 +39,8 @@ jobs:
       - name: Deploy to Cloud Run
         uses: google-github-actions/deploy-cloudrun@v2
         with:
-          project_id: banded-advice-453200-m1
+          project_id:
+banded-advice-453200-m1
           service: Synthara-ai
           region: us-central1
           source: '.'
