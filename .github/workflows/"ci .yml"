@@ -42,4 +42,4 @@ jobs:
           project_id: banded-advice-453200-m1
           service: Synthara-ai
           region: us-central1
-          source: .
+          source: '.'
