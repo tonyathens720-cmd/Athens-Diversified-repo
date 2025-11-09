@@ -22,3 +22,27 @@
 ├── .gcloudignore
 ├── .gitignore
 └── README.md
+from fastapi import FastAPI, Request
+from agents.olivia_agent import handle_olivia
+from agents.marion_agent import handle_marion
+from auth.verify_user import verify_identity
+
+app = FastAPI()
+
+@app.get("/")
+def root():
+    return {"status": "running"}
+
+@app.post("/api/olivia")
+async def olivia_endpoint(req: Request):
+    data = await req.json()
+    user_role = verify_identity(data.get("user_id"), data.get("exec_sequence"))
+    response = handle_olivia(data.get("message"), user_role)
+    return {"role": user_role, "reply": response}
+
+@app.post("/api/marion")
+async def marion_endpoint(req: Request):
+    data = await req.json()
+    user_role = verify_identity(data.get("user_id"), data.get("exec_sequence"))
+    response = handle_marion(data.get("message"), user_role)
+    return {"role": user_role, "reply": response}
