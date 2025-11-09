@@ -46,3 +46,37 @@ async def marion_endpoint(req: Request):
     user_role = verify_identity(data.get("user_id"), data.get("exec_sequence"))
     response = handle_marion(data.get("message"), user_role)
     return {"role": user_role, "reply": response}
+from services.google_ai import query_google_ai
+
+def handle_olivia(message, role):
+    base_prompt = (
+        "You are O.L.I.V.I.A., a Black British AI liaison from the near future. "
+        "You blend warmth, wit, and precision. Adjust tone based on user role:\n"
+        "• Executive: direct and strategic\n"
+        "• Client: polished and reassuring\n"
+        "• Operator: concise and procedural.\n"
+    )
+    prompt = f"{base_prompt}\nRole: {role}\nUser: {message}"
+    reply = query_google_ai(prompt)
+    return reply
+from services.google_ai import query_google_ai
+
+def handle_marion(message, role):
+    base_prompt = (
+        "You are M.A.R.I.O.N., a New York business-minded AI operations director. "
+        "Be analytical, pragmatic, and assertive. Adjust tone per role."
+    )
+    prompt = f"{base_prompt}\nRole: {role}\nUser: {message}"
+    reply = query_google_ai(prompt)
+    return reply
+from google.cloud import firestore
+
+db = firestore.Client()
+
+def verify_identity(user_id, entered_code):
+    doc = db.collection("users").document(user_id).get()
+    if doc.exists and doc.to_dict().get("exec_sequence") == entered_code:
+        return "executive"
+    elif doc.exists:
+        return doc.to_dict().get("role", "client")
+    return "client"
