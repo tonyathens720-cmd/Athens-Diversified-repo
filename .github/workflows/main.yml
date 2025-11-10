@@ -1,0 +1,147 @@
+import React, { useState } from 'react';
+
+// Hardcoded configuration data from the user's JSON input
+const APP_CONFIG = {
+  "app_branding": {
+    "parent": "Athens Diversified LLC",
+    "subsidiaries": [
+      "Synthara AI",
+      "AeroSync Solutions"
+    ]
+  },
+  "home_page": {
+    // Using placeholder URLs for the referenced images
+    "image": "https://placehold.co/1000x500/4F46E5/FFFFFF?text=O.L.I.V.I.A.+AI+System+-+Welcome",
+    "logo": "https://placehold.co/100x40/313C53/FFFFFF?text=ADLLC",
+    "navigation": {
+      "tabs": [
+        {
+          "label": "M.A.R.I.O.N.",
+          "logo": "https://placehold.co/40x40/10B981/FFFFFF?text=M",
+          "route": "/marion",
+          "color": "bg-emerald-500" // Custom color for visual distinction
+        },
+        {
+          "label": "O.L.I.V.I.A.",
+          "logo": "https://placehold.co/40x40/EF4444/FFFFFF?text=O",
+          "route": "/olivia",
+          "color": "bg-red-500"
+        }
+      ]
+    }
+  },
+  "branding_message": "Powered by Athens Diversified LLC"
+};
+
+// Main functional component
+const App = () => {
+  // Simple state to simulate routing/page view
+  const [currentRoute, setCurrentRoute] = useState('/');
+
+  // Placeholder component for the specific AI systems pages
+  const AIHubView = ({ label }) => (
+    <div className="p-8 bg-white/10 rounded-xl shadow-2xl backdrop-blur-md">
+      <h2 className="text-3xl font-bold mb-4 text-white">{label} Dashboard</h2>
+      <p className="text-gray-300">
+        This is the dedicated page for the {label} system. 
+        Implement specific logic and features here.
+      </p>
+    </div>
+  );
+
+  // Determine the content to display based on the current route
+  let mainContent;
+  const activeTab = APP_CONFIG.home_page.navigation.tabs.find(tab => tab.route === currentRoute);
+
+  if (activeTab) {
+    // If a navigation tab is active, show the AIHubView for that system
+    mainContent = <AIHubView label={activeTab.label} />;
+  } else {
+    // Default to the Home Page view
+    mainContent = (
+      <div className="flex flex-col items-center">
+        <h1 className="text-5xl md:text-7xl font-extrabold text-white mb-6 tracking-tight drop-shadow-lg">
+          Welcome to the AI Hub
+        </h1>
+        <p className="text-xl text-indigo-200 mb-10 max-w-2xl text-center">
+          Leveraging the combined power of {APP_CONFIG.app_branding.subsidiaries.join(' and ')}
+        </p>
+        <img
+          src={APP_CONFIG.home_page.image}
+          alt="Featured AI System"
+          className="w-full max-w-4xl rounded-2xl shadow-xl border-4 border-indigo-500/50"
+          onError={(e) => { e.target.onerror = null; e.target.src="https://placehold.co/1000x500/4F46E5/FFFFFF?text=Image+Not+Found" }}
+        />
+        
+        {/* Call to action using the navigation tabs */}
+        <div className="mt-12 w-full max-w-xl grid grid-cols-1 sm:grid-cols-2 gap-6">
+          {APP_CONFIG.home_page.navigation.tabs.map((tab) => (
+            <button
+              key={tab.route}
+              onClick={() => setCurrentRoute(tab.route)}
+              className={`${tab.color} text-white font-semibold py-4 px-6 rounded-xl shadow-lg 
+                          hover:shadow-2xl transition duration-300 transform hover:scale-[1.02]
+                          flex items-center justify-center space-x-3`}
+            >
+              <img src={tab.logo} alt={tab.label + " Logo"} className="w-8 h-8 rounded-full" />
+              <span className="text-lg">{tab.label}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-gray-900 font-sans flex flex-col pt-20">
+      
+      {/* --- Fixed Header Navigation --- */}
+      <header className="fixed top-0 left-0 right-0 bg-gray-900/90 backdrop-blur-sm shadow-xl z-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex justify-between items-center">
+          <div 
+            className="flex items-center space-x-3 cursor-pointer"
+            onClick={() => setCurrentRoute('/')} // Back to home
+          >
+            <img 
+              src={APP_CONFIG.home_page.logo} 
+              alt="Parent Company Logo" 
+              className="h-8 w-auto" 
+            />
+            <span className="text-white text-lg font-bold hidden sm:inline">
+              {APP_CONFIG.app_branding.parent}
+            </span>
+          </div>
+
+          {/* Main Navigation Tabs */}
+          <nav className="flex space-x-2 sm:space-x-4">
+            {APP_CONFIG.home_page.navigation.tabs.map((tab) => (
+              <button
+                key={tab.route}
+                onClick={() => setCurrentRoute(tab.route)}
+                className={`py-2 px-3 sm:px-4 rounded-lg text-sm font-medium transition duration-150 ease-in-out
+                  ${currentRoute === tab.route 
+                    ? 'bg-indigo-600 text-white shadow-md' 
+                    : 'text-indigo-300 hover:bg-gray-700 hover:text-white'
+                  }`}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </nav>
+        </div>
+      </header>
+
+      {/* --- Main Content Area --- */}
+      <main className="flex-grow flex items-center justify-center p-4 md:p-8">
+        {mainContent}
+      </main>
+
+      {/* --- Footer Branding --- */}
+      <footer className="bg-gray-800/80 p-4 text-center text-sm text-gray-500 border-t border-gray-700">
+        {APP_CONFIG.branding_message}
+      </footer>
+    </div>
+  );
+};
+
+export default App;
